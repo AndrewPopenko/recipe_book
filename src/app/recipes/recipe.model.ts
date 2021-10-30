@@ -9,3 +9,9 @@ export class RecipeModel {
     this.imgPath = imagePath;
   }
 }
+
+
+export class RecipeEventModel {
+  id = -1;
+  isClicked = false;
+}

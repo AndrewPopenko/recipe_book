@@ -25,13 +25,17 @@ export class RecipeEditComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((params: Params) => {
       this.id = +params['id'];
-      this.editMode = params['id'] !== null;
+      this.editMode = params['id'] != null;
       this.initForm();
     })
   }
 
   onSubmit(): void {
-    console.log(this.recipeForm)
+    if(this.editMode) {
+      this.recipeService.updateRecipe(this.id, this.recipeForm.value);
+    } else {
+      this.recipeService.addRecipe(this.recipeForm.value);
+    }
   }
 
   get controls(): AbstractControl[] {
@@ -39,9 +43,12 @@ export class RecipeEditComponent implements OnInit {
   }
 
   onAddIngredient(): void {
-    this.controls.push(new FormGroup({
-      'name': new FormControl(),
-      'amount': new FormControl(),
+    (<FormArray>this.recipeForm.get('ingredients')).push(new FormGroup({
+      'name': new FormControl(null, Validators.required),
+      'amount': new FormControl(null, [
+        Validators.required,
+        Validators.pattern(/^[1-9]+[0-9]*$/)
+      ]),
     }))
   }
 
@@ -61,8 +68,11 @@ export class RecipeEditComponent implements OnInit {
       if(recipe['ingredients']) {
         for (const ingredient of recipe.ingredients) {
           ingredients.push(new FormGroup({
-            'name': new FormControl(ingredient.name),
-            'amount': new FormControl(ingredient.amount),
+            'name': new FormControl(ingredient.name, Validators.required),
+            'amount': new FormControl(ingredient.amount, [
+              Validators.required,
+              Validators.pattern(/^[1-9]+[0-9]*$/)
+            ]),
           }));
         }
       }

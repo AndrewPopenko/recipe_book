@@ -9,14 +9,17 @@ import { RecipesComponent } from './recipes/recipes.component';
 import { RecipeListComponent } from './recipes/recipe-list/recipe-list.component';
 import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 import { ShoppingEditComponent } from './shopping-list/shopping-edit/shopping-edit.component';
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { DropdownDirective } from "./shared/dropdown.directive";
-import { ShoppingListService } from "./service/shopping-list.service";
-import { AppRoutingModule } from "./app-routing.module";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DropdownDirective } from './shared/dropdown.directive';
+import { ShoppingListService } from './service/shopping-list.service';
+import { AppRoutingModule } from './app-routing.module';
 import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.component';
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
-import { RecipeService } from "./service/recipe.service";
-import { HttpClientModule } from "@angular/common/http";
+import { RecipeService } from './service/recipe.service';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { AuthComponent } from './auth/auth.component';
+import { LoaderSpinnerComponent } from './shared/loader-spinner/loader-spinner.component';
+import { AuthInterceptor } from './auth/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,9 @@ import { HttpClientModule } from "@angular/common/http";
     ShoppingEditComponent,
     DropdownDirective,
     RecipeStartComponent,
-    RecipeEditComponent
+    RecipeEditComponent,
+    AuthComponent,
+    LoaderSpinnerComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,7 +48,12 @@ import { HttpClientModule } from "@angular/common/http";
   providers: [
     ShoppingListService,
     RecipeService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true,
+    },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

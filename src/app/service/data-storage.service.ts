@@ -19,11 +19,11 @@ export class DataStorageService {
 
   storeRecipes(): void {
     const recipes = this.recipeService.getRecipes();
-    this.httClient.put(Api.baseUrl + '/recipes.json', recipes).subscribe();
+    this.httClient.put(Api.databaseURL + '/recipes.json', recipes).subscribe();
   }
 
   fetchRecipes(): Observable<Recipe[]> {
-    return this.httClient.get<Recipe[]>(Api.baseUrl + '/recipes.json').pipe(
+    return this.httClient.get<Recipe[]>(Api.databaseURL + '/recipes.json').pipe(
       map((recipes: Recipe[]) => {
         return recipes.map((recipe: Recipe) => {
           return {
